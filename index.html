@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+  <title>Intro To Web GiS, Dixon Assignment 5</title>
+  <style>
+    html,
+    body,
+    #map {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+      #searchInput {
+      position: absolute;
+      top: 200px;
+      right: 10px;
+      z-index: 999;
+      width: 160px;
+      padding: 6px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #000;
+    }
+    #searchBtn {
+      position: absolute;
+      top: 200px;
+      right: 180px;
+      z-index: 999;
+      padding: 6px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #000;
+    }
+
+  </style>
+</head>
+<link rel="stylesheet" href="https://js.arcgis.com/4.33/esri/css/main.css">
+<script src="https://js.arcgis.com/4.33/"></script>
+
+<script type="module" src="map.js"></script>
+<script type="text/javascript" src="obj.js"></script>
+<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+
+<body>
+
+  <input id="searchInput" type="text" placeholder="Search city..." />
+  <button id="searchBtn">Search</button>
+
+  <div id="map" class="map">
+  </div>
+
+
+</body>
+
+</html>
