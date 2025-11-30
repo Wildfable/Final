@@ -13,7 +13,7 @@ import FeatureLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/Feature
 
 
 Main = (function() {
-    c const map = new Map({
+    const map = new Map({
         basemap: "topo-vector"  
         
     });
