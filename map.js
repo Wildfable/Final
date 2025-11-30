@@ -32,119 +32,28 @@ Main = (function() {
     });
              
 const initMap = function() {
-   
-    const graphicsLayer = new GraphicsLayer();
-    map.add(graphicsLayer);
-
-   
-    for (const [key, value] of Object.entries(myStuff)) {
-        const point = {                        
-            type: "point",                             
-            x: value.coord[0],                        
-            y: value.coord[1],                            
-            z: 10000                          
-        };
-        const markerSymbol = {                            
-            type: "simple-marker",     
-            style: "diamond",                        
-            color: [222, 49, 99],                            
-            outline: {
-                color: [119, 7, 55],                             
-                width: 1
-            }
-        };
-        const pointGraphic = new Graphic({                            
-            geometry: point,                            
-            symbol: markerSymbol,                            
-            popupTemplate: {                                
-                title: key,
-                content: 'Location: ' + value.city + ", " + value.state
-            }
-        });
-        graphicsLayer.add(pointGraphic);
-    }
-
-  
-    const cityGraphics = [];
-    let objectId = 1; 
-
-    for (const [key, value] of Object.entries(cities)) {
-        cityGraphics.push(new Graphic({
-            geometry: {
-                type: "point",
-                x: value.coord[0],
-                y: value.coord[1],
-               
-            },
-            attributes: {
-                objectId: objectId++,  
-                title: key,
-                city: value.city,
-                state: value.state
-            }
-        }));
-    }
-
-   
-const cityFeatureLayer = new FeatureLayer({
-    source: cityGraphics,
-    objectIdField: "objectId",
-    fields: [
-        { name: "objectId", type: "oid" },
-        { name: "title", type: "string" },
-        { name: "city", type: "string" },
-        { name: "state", type: "string" }
-    ],
-    geometryType: "point", 
-    spatialReference: { wkid: 4326 }, 
-
-       elevationInfo: {
-        mode: "on-the-ground"  // This makes the layer render flat in 3D scene
-    },
-    
-    featureReduction: {
-        type: "cluster",
-        clusterRadius: 500, 
-        clusterMinSize: 24,
-        clusterMaxSize: 60,
-       
-        clusterSymbol: {
-            type: "simple-marker",
-            style: "circle",
-            color: [255, 0, 0, 0.7],
-            size: 30,
-            outline: {
-                color: [255, 255, 255],
-                width: 2
+    const infillLayer = new GeoJSONLayer({
+        url: "./geojson/infill_parcels.geojson",
+        title: "Laramie Infill Parcels",
+        opacity: 0.7,
+        renderer: {
+            type: "simple",
+            symbol: {
+                type: "simple-fill",
+                color: [0, 100, 255, 0.3], 
+                outline: {
+                    color: [0, 70, 200],
+                    width: 1
+                }
             }
         },
-       
-    },
-    
-    
-    renderer: {
-        type: "simple",
-        symbol: {
-            type: "simple-marker",
-            style: "circle",
-            color: [152, 251, 152],
-            size: 8,
-            outline: {
-                color: [71, 135, 120],
-                width: 1
-            }
+        popupTemplate: {
+            title: "Infill Parcel",
+            content: "Click to see parcel details"
         }
-    },
-    
-    popupTemplate: {
-        title: "{title}",
-        content: "City: {city}, State: {state}"
-    }
-});
+    });
 
-    map.add(cityFeatureLayer);
-
-    
+    map.add(infillLayer);
 };
 
 
