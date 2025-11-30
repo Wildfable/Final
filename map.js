@@ -5,56 +5,31 @@ var Main;
 import Map from "https://js.arcgis.com/4.33/@arcgis/core/Map.js";
 import Graphic from "https://js.arcgis.com/4.33/@arcgis/core/Graphic.js";
 import GraphicsLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/GraphicsLayer.js";
+import MapView from "https://js.arcgis.com/4.33/@arcgis/core/views/MapView.js";
+import GeoJSONLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/GeoJSONLayer.js";
 import ElevationLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/ElevationLayer.js";
-import SceneView from "https://js.arcgis.com/4.33/@arcgis/core/views/SceneView.js";
 import FeatureLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/FeatureLayer.js";
 
+
+
 Main = (function() {
-    const layer = new ElevationLayer({
-        url: "http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"
-    });
-    const map = new Map({
-        basemap: "hybrid",
-        ground: {
-            layers: [layer]
-         },
+    c const map = new Map({
+        basemap: "topo-vector"  
+        
     });
     
-    const view = new SceneView({
+   const view = new MapView({  
         container: "map",
-        viewingMode: "global",
         map: map,
-        camera: {
-            position: {
-                x: -175.700680,
-                y: 44.270,
-                z: 17500000,
-                spatialReference: {
-                    wkid: 4326
-    
-                }
-            },
-            heading: 0,
-            tilt: 0
-        },
+        center: [-105.5910, 41.3114], 
+        zoom: 13,  
         popup: {
             dockEnabled: true,
             dockOptions: {
                 breakpoint: false
             }
-        },
-       
-
-        environment: {
-             background: {
-             type: "sky" 
-                },
-            starsEnabled: true,
-             lighting: {
-            directShadowsEnabled: false
-            }
-                }
-});
+        }
+    });
              
 const initMap = function() {
    
