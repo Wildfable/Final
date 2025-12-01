@@ -7,7 +7,6 @@ import Graphic from "https://js.arcgis.com/4.33/@arcgis/core/Graphic.js";
 import GraphicsLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/GraphicsLayer.js";
 import MapView from "https://js.arcgis.com/4.33/@arcgis/core/views/MapView.js";
 import GeoJSONLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/GeoJSONLayer.js";
-import ElevationLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/ElevationLayer.js";
 import FeatureLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/FeatureLayer.js";
 
 
