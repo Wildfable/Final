@@ -32,7 +32,7 @@ Main = (function() {
              
 const initMap = function() {
     const infillLayer = new GeoJSONLayer({
-        url: "./geojson/infill_parcels.geojson",
+        url: "./Laramie_Infill.geojson",
         title: "Laramie Infill Parcels",
         opacity: 0.7,
         renderer: {
