@@ -52,6 +52,13 @@ const initMap = function() {
         }
     });
 
+        infillLayer.when(() => {
+        console.log("GeoJSON layer loaded successfully!");
+        console.log("Number of features:", infillLayer.source.length);
+          }).catch(error => {
+        console.error("Error loading GeoJSON:", error);
+            });
+
     map.add(infillLayer);
 };
 
