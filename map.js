@@ -63,32 +63,14 @@ const initMap = function() {
 };
 
 
-                    
-    
-                                    
+                                                  
 
                 
     initMap()
 
-    view.on("click", function(event) {
-  
-  view.hitTest(event).then(function(response) {
-    let result = response.results[0];
 
-    if (result?.type === "graphic") {
-      let lon = result.mapPoint.longitude;
-      let lat = result.mapPoint.latitude;
 
-      console.log("Hit graphic at (" + lon + ", " + lat + ")", result.graphic);
-      view.goTo({target:result.graphic.geometry,
-                zoom:7
-    });
-    } else {
-      console.log("Did not hit any graphic");
-    }
-  });
-});
-
+/* 
 view.when(() => {
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
@@ -117,7 +99,7 @@ view.when(() => {
 
             
 })();
-
+*/
 
 
     
