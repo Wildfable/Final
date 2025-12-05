@@ -40,14 +40,78 @@ const initMap = function() {
             field: "Zoning",
             defaultSymbol: {
                 type: "simple-fill",
-                color: [200, 200, 200, 0.3], 
+                color: [200, 200, 200, 0.7], 
                 outline: {
                     color: [100, 100, 100],
                     width: 1
                 }
+            },
+            uniqueValueInfos: [
+        {
+            value: "R1",
+            symbol: {
+                type: "simple-fill",
+                color: [255, 255, 0, 0.7],  
+                outline: { color: [100, 100, 100], width: 1 }
             }
-            
-            
+        },
+        {
+            value: "R2",
+            symbol: {
+                type: "simple-fill",
+                color: [128, 0, 128, 0.7], 
+                outline: { color: [100, 100, 100], width: 1 }
+            }
+        },
+        {
+            value: "R3",
+            symbol: {
+                type: "simple-fill",
+                color: [255, 0, 0, 0.7], 
+                outline: { color: [100, 100, 100], width: 1 }
+            }
+        },
+        {
+            value: "R2M",
+            symbol: {
+                type: "simple-fill",
+                color: [210, 105, 30, 0.7],  
+                outline: { color: [100, 100, 100], width: 1 }
+            }
+        },
+        {
+            value: "C2",
+            symbol: {
+                type: "simple-fill",
+                color: [255, 165, 0, 0.7],  
+                outline: { color: [100, 100, 100], width: 1 }
+            }
+        },
+        {
+            value: "B2",
+            symbol: {
+                type: "simple-fill",
+                color: [0, 112, 255, 0.7], 
+                outline: { color: [100, 100, 100], width: 1 }
+            }
+        },
+        {
+            value: "AG",
+            symbol: {
+                type: "simple-fill",
+                color: [144, 238, 144, 0.7],  
+                outline: { color: [100, 100, 100], width: 1 }
+            }
+        },
+        {
+            value: "O",
+            symbol: {
+                type: "simple-fill",
+                color: [0, 128, 128, 0.7],  
+                outline: { color: [100, 100, 100], width: 1 }
+            }
+        }
+    ]     
         },
 
         popupTemplate: {
