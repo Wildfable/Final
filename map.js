@@ -36,16 +36,20 @@ const initMap = function() {
         title: "Laramie Infill Parcels",
         opacity: 0.7,
         renderer: {
-            type: "simple",
-            symbol: {
+            type: "unique-value",
+            field: "Zoning",
+            defaultSymbol: {
                 type: "simple-fill",
-                color: [0, 100, 255, 0.3], 
+                color: [200, 200, 200, 0.3], 
                 outline: {
-                    color: [0, 70, 200],
+                    color: [100, 100, 100],
                     width: 1
                 }
             }
+            
+            
         },
+
         popupTemplate: {
             title: "Infill Parcel",
             content: "Click to see parcel details"
