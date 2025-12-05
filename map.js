@@ -159,6 +159,68 @@ const initMap = function() {
         console.error("Error loading GeoJSON:", error);
             });
 
+    infillLayer.when(() => {
+        console.log("Suitability Analysis");
+        
+        let highCount = 0, mediumCount = 0, lowCount = 0;
+        
+        for (let i = 0; i < infillLayer.source.length; i++) {
+            const parcel = infillLayer.source[i];
+            const attrs = parcel.attributes;
+            
+            let score = 0;
+            
+            // 1. Max Units
+            if (attrs.MaxUnits > 50) score += 3;
+            else if (attrs.MaxUnits > 20) score += 2;
+            else if (attrs.MaxUnits > 5) score += 1;
+            
+            // 2. Public Improvements
+            const totalPI = (attrs.PI_Sidewal || 0) + (attrs.PI_Roadway || 0);
+            if (totalPI === 0) score += 3;
+            else if (totalPI < 1000) score += 2;
+            else if (totalPI < 5000) score += 1;
+            
+            // 3. Lot Size
+            if (attrs.grosssf > 100000) score += 2;
+            else if (attrs.grosssf > 50000) score += 1;
+            
+            // 4. Existing Development
+            if (attrs.ExistingSt === "N") score += 1;
+            if (attrs.ExistingLo === "0") score += 2;
+            
+            // 5. Ownership
+            if (attrs.City_Owned === "Y") {
+                score += 1;  
+            } else if (attrs.UW_Owned === "N") {
+                const ownerName = attrs.name1 || "";
+                if (!ownerName.includes("RAILROAD") && !ownerName.includes("UPRR")) {
+                    score += 1; 
+                }
+            }
+
+                        attrs.SuitabilityScore = score;
+            
+            if (score >= 8) {
+                attrs.Suitability = "High";
+                highCount++;
+            } else if (score >= 5) {
+                attrs.Suitability = "Medium";
+                mediumCount++;
+            } else {
+                attrs.Suitability = "Low";
+                lowCount++;
+            }
+        }
+        
+        console.log(`Suitability analysis complete:`);
+        console.log(`   High Potential: ${highCount} parcels`);
+        console.log(`   Medium Potential: ${mediumCount} parcels`);
+        console.log(`   Low Potential: ${lowCount} parcels`);
+        
+    }).catch(error => {
+        console.error("Error in suitability analysis:", error);
+    });
     map.add(infillLayer);
 
 const zoningLayer = new GeoJSONLayer({
