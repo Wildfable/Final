@@ -80,6 +80,38 @@ const initMap = function() {
             }
         },
         {
+            value: "LR",
+            symbol: {
+                type: "simple-fill",
+                color: [0, 100, 0, 0.7],  
+                outline: { color: [100, 100, 100], width: 1 }
+            }
+        },
+         {
+            value: "RR",
+            symbol: {
+                type: "simple-fill",
+                color: [255, 182, 193, 0.7],  
+                outline: { color: [100, 100, 100], width: 1 }
+            }
+        },
+         {
+            value: "I2",
+            symbol: {
+                type: "simple-fill",
+                color: [72, 61, 139, 0.7],  
+                outline: { color: [100, 100, 100], width: 1 }
+            }
+        },
+         {
+            value: "B1",
+            symbol: {
+                type: "simple-fill",
+                color: [154, 205, 50, 0.7],  
+                outline: { color: [100, 100, 100], width: 1 }
+            }
+        },
+        {
             value: "C2",
             symbol: {
                 type: "simple-fill",
@@ -130,7 +162,31 @@ const initMap = function() {
     map.add(infillLayer);
 };
 
+map.add(infillLayer);
 
+
+const zoningLayer = new GeoJSONLayer({
+    url: "./Zoning.geojson",
+    title: "City of Laramie Zoning Districts",
+    opacity: 0.3,  
+    renderer: {
+        type: "simple",
+        symbol: {
+            type: "simple-fill",
+            color: [0, 0, 0, 0], 
+            outline: {
+                color: [0, 0, 0],  
+                width: 2  
+            }
+        }
+    },
+    popupTemplate: {
+        title: "Zoning District",
+        content: "{ZONING_DISTRICT}"  // Adjust field name as needed
+    }
+});
+
+map.add(zoningLayer);
                                                   
 
                 
