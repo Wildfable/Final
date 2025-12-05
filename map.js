@@ -164,18 +164,194 @@ const initMap = function() {
 const zoningLayer = new GeoJSONLayer({
     url: "./Zoning.geojson",
     title: "City of Laramie Zoning Districts",
-    opacity: 0.3,  
+    opacity: 0.6,  
     renderer: {
-        type: "simple",
-        symbol: {
-            type: "simple-fill",
-            color: [0, 0, 0, 0], 
-            outline: {
-                color: [0, 0, 0],  
-                width: 2  
-            }
-        }
-    },
+            type: "unique-value",
+            field: "zoneclass",
+            defaultSymbol: {
+                type: "simple-fill",
+                color: [150, 150, 150, 0.6],
+                outline: { color: [100, 100, 100], width: 1 }
+            },
+            uniqueValueInfos: [
+                {
+                    value: "AE",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [100, 200, 255, 0.6], 
+                        outline: { color: [70, 170, 230], width: 1 }
+                    }
+                },
+                {
+                    value: "AV",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [150, 220, 255, 0.6], 
+                        outline: { color: [120, 190, 230], width: 1 }
+                    }
+                },
+                {
+                    value: "AG",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [139, 69, 19, 0.6],  
+                        outline: { color: [110, 50, 10], width: 1 }
+                    }
+                },
+                {
+                    value: "B1",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [255, 217, 102, 0.6],  
+                        outline: { color: [230, 190, 80], width: 1 }
+                    }
+                },
+                {
+                    value: "B2",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [255, 150, 0, 0.6],  
+                        outline: { color: [230, 120, 0], width: 1 }
+                    }
+                },
+                {
+                    value: "NB",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [255, 200, 100, 0.6], 
+                        outline: { color: [230, 170, 80], width: 1 }
+                    }
+                },
+                {
+                    value: "C2", 
+                    symbol: {
+                        type: "simple-fill",
+                        color: [255, 0, 0, 0.6], 
+                        outline: { color: [200, 0, 0], width: 1 }
+                    }
+                },
+                {
+                    value: "DC",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [255, 50, 50, 0.6], 
+                        outline: { color: [220, 30, 30], width: 1 }
+                    }
+                },
+                {
+                    value: "I1", 
+                    symbol: {
+                        type: "simple-fill",
+                        color: [200, 100, 200, 0.6],  
+                        outline: { color: [170, 70, 170], width: 1 }
+                    }
+                },
+                {
+                    value: "I2", 
+                    symbol: {
+                        type: "simple-fill",
+                        color: [150, 50, 150, 0.6],  
+                        outline: { color: [120, 30, 120], width: 1 }
+                    }
+                },
+                {
+                    value: "IP", 
+                    symbol: {
+                        type: "simple-fill",
+                        color: [180, 80, 180, 0.6],  
+                        outline: { color: [150, 60, 150], width: 1 }
+                    }
+                },
+                {
+                    value: "LM",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [170, 70, 170, 0.6],  
+                        outline: { color: [140, 50, 140], width: 1 }
+                    }
+                },
+                {
+                    value: "LR",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [190, 232, 255, 0.6],  
+                        outline: { color: [160, 210, 240], width: 1 }
+                    }
+                },
+                {
+                    value: "R1", 
+                    symbol: {
+                        type: "simple-fill",
+                        color: [190, 232, 255, 0.6],  
+                        outline: { color: [150, 200, 230], width: 1 }
+                    }
+                },
+                {
+                    value: "R2",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [166, 255, 193, 0.6], 
+                        outline: { color: [130, 220, 160], width: 1 }
+                    }
+                },
+                {
+                    value: "R2M", 
+                    symbol: {
+                        type: "simple-fill",
+                        color: [144, 238, 144, 0.6],  
+                        outline: { color: [120, 210, 120], width: 1 }
+                    }
+                },
+                {
+                    value: "R3",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [255, 242, 204, 0.6],  
+                        outline: { color: [230, 220, 180], width: 1 }
+                    }
+                },
+                {
+                    value: "R3-PUD",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [255, 255, 150, 0.6],  
+                        outline: { color: [230, 230, 120], width: 1 }
+                    }
+                },
+                {
+                    value: "RR",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [210, 180, 140, 0.6],  
+                        outline: { color: [180, 150, 110], width: 1 }
+                    }
+                },
+                {
+                    value: "O",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [200, 200, 200, 0.6],  
+                        outline: { color: [170, 170, 170], width: 1 }
+                    }
+                },
+                {
+                    value: "TO", 
+                    symbol: {
+                        type: "simple-fill",
+                        color: [180, 220, 240, 0.6],  
+                        outline: { color: [150, 190, 220], width: 1 }
+                    }
+                },
+                {
+                    value: "Other",  
+                    symbol: {
+                        type: "simple-fill",
+                        color: [150, 150, 150, 0.6],  
+                        outline: { color: [120, 120, 120], width: 1 }
+                    }
+                }
+            ]
+        },
     popupTemplate: {
         title: "Zoning District",
         content: "{ZONING_DISTRICT}"  
