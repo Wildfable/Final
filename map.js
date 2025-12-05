@@ -34,131 +34,8 @@ const initMap = function() {
     const infillLayer = new GeoJSONLayer({
         url: "./Laramie_Infill.geojson",
         title: "Laramie Infill Parcels",
-        opacity: 0.7,
-        renderer: {
-            type: "unique-value",
-            field: "Zoning",
-            defaultSymbol: {
-                type: "simple-fill",
-                color: [200, 200, 200, 0.7], 
-                outline: {
-                    color: [100, 100, 100],
-                    width: 1
-                }
-            },
-            uniqueValueInfos: [
-        {
-            value: "R1",
-            symbol: {
-                type: "simple-fill",
-                color: [255, 255, 0, 0.7],  
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        },
-        {
-            value: "R2",
-            symbol: {
-                type: "simple-fill",
-                color: [128, 0, 128, 0.7], 
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        },
-        {
-            value: "R3",
-            symbol: {
-                type: "simple-fill",
-                color: [255, 0, 0, 0.7], 
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        },
-        {
-            value: "R2M",
-            symbol: {
-                type: "simple-fill",
-                color: [210, 105, 30, 0.7],  
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        },
-        {
-            value: "LR",
-            symbol: {
-                type: "simple-fill",
-                color: [0, 100, 0, 0.7],  
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        },
-         {
-            value: "RR",
-            symbol: {
-                type: "simple-fill",
-                color: [255, 182, 193, 0.7],  
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        },
-         {
-            value: "I2",
-            symbol: {
-                type: "simple-fill",
-                color: [72, 61, 139, 0.7],  
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        },
-         {
-            value: "B1",
-            symbol: {
-                type: "simple-fill",
-                color: [154, 205, 50, 0.7],  
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        },
-        {
-            value: "C2",
-            symbol: {
-                type: "simple-fill",
-                color: [255, 165, 0, 0.7],  
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        },
-        {
-            value: "B2",
-            symbol: {
-                type: "simple-fill",
-                color: [0, 112, 255, 0.7], 
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        },
-        {
-            value: "AG",
-            symbol: {
-                type: "simple-fill",
-                color: [144, 238, 144, 0.7],  
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        },
-        {
-            value: "O",
-            symbol: {
-                type: "simple-fill",
-                color: [0, 128, 128, 0.7],  
-                outline: { color: [100, 100, 100], width: 1 }
-            }
-        }
-    ]     
-        },
-
-        popupTemplate: {
-            title: "Infill Parcel",
-            content: "Click to see parcel details"
-        }
+        opacity: 0.7
     });
-
-        infillLayer.when(() => {
-        console.log("GeoJSON layer loaded successfully!");
-        console.log("Number of features:", infillLayer.source.length);
-          }).catch(error => {
-        console.error("Error loading GeoJSON:", error);
-            });
-
     infillLayer.when(() => {
         console.log("Suitability Analysis");
         
@@ -195,11 +72,11 @@ const initMap = function() {
             } else if (attrs.UW_Owned === "N") {
                 const ownerName = attrs.name1 || "";
                 if (!ownerName.includes("RAILROAD") && !ownerName.includes("UPRR")) {
-                    score += 1; 
+                    score += 1;  
                 }
             }
-
-                        attrs.SuitabilityScore = score;
+          
+            attrs.SuitabilityScore = score;
             
             if (score >= 8) {
                 attrs.Suitability = "High";
@@ -213,10 +90,48 @@ const initMap = function() {
             }
         }
         
-        console.log(`Suitability analysis complete:`);
-        console.log(`   High Potential: ${highCount} parcels`);
-        console.log(`   Medium Potential: ${mediumCount} parcels`);
-        console.log(`   Low Potential: ${lowCount} parcels`);
+        console.log(`   Suitability analysis complete:`);
+        console.log(`   High Potential: ${highCount} parcels (Green)`);
+        console.log(`   Medium Potential: ${mediumCount} parcels (Yellow)`);
+        console.log(`   Low Potential: ${lowCount} parcels (Red)`);
+        
+        infillLayer.renderer = {
+            type: "unique-value",
+            field: "Suitability", 
+            defaultSymbol: {
+                type: "simple-fill",
+                color: [150, 150, 150, 0.7],
+                outline: { color: [100, 100, 100], width: 1 }
+            },
+            uniqueValueInfos: [
+                {
+                    value: "High",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [0, 255, 0, 0.7],  // GREEN
+                        outline: { color: [0, 200, 0], width: 1 }
+                    }
+                },
+                {
+                    value: "Medium",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [255, 255, 0, 0.7],  // YELLOW
+                        outline: { color: [200, 200, 0], width: 1 }
+                    }
+                },
+                {
+                    value: "Low",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [255, 0, 0, 0.7],  // RED
+                        outline: { color: [200, 0, 0], width: 1 }
+                    }
+                }
+            ]
+        };
+        
+    
         
     }).catch(error => {
         console.error("Error in suitability analysis:", error);
