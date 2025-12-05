@@ -160,10 +160,6 @@ const initMap = function() {
             });
 
     map.add(infillLayer);
-};
-
-map.add(infillLayer);
-
 
 const zoningLayer = new GeoJSONLayer({
     url: "./Zoning.geojson",
@@ -182,16 +178,53 @@ const zoningLayer = new GeoJSONLayer({
     },
     popupTemplate: {
         title: "Zoning District",
-        content: "{ZONING_DISTRICT}"  // Adjust field name as needed
+        content: "{ZONING_DISTRICT}"  
     }
 });
+    zoningLayer.when(() => {
+        console.log("Zoning GeoJSON loaded successfully!");
+        }).catch(error => {
+        console.error("Error loading zoning GeoJSON:", error);
+         });
 
-map.add(zoningLayer);
-                                                  
+    map.add(zoningLayer);
+};
 
-                
-    initMap()
+initMap();
 
+view.when(() => {
+    const toggleBtn = document.createElement("button");
+    toggleBtn.textContent = "Hide Zoning Districts";
+    toggleBtn.style.cssText = `
+        padding: 10px 15px;
+        background-color: #0079c1;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    `;
+    
+    view.ui.add(toggleBtn, "top-right");
+    
+    const zoningLayer = map.layers.getItemAt(1);
+    
+    let zoningVisible = true;
+    
+    toggleBtn.addEventListener("click", function() {
+        if (zoningVisible) {
+            zoningLayer.visible = false;
+            toggleBtn.textContent = "Show Zoning Districts";
+            zoningVisible = false;
+        } else {
+            zoningLayer.visible = true;
+            toggleBtn.textContent = "Hide Zoning Districts";
+            zoningVisible = true;
+        }
+    });
+});
 
 
 /* 
