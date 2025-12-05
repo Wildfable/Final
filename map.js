@@ -352,10 +352,13 @@ const zoningLayer = new GeoJSONLayer({
                 }
             ]
         },
-    popupTemplate: {
-        title: "Zoning District",
-        content: "{ZONING_DISTRICT}"  
-    }
+     popupTemplate: {
+            title: "Laramie's Zoning",
+            content: `
+            <b>Zoning Code:</b> {zoneclass}<br>
+            <b>Description:</b> {zonedesc}<br>
+            `
+        }
 });
     zoningLayer.when(() => {
         console.log("Zoning GeoJSON loaded successfully!");
