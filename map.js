@@ -31,111 +31,124 @@ Main = (function() {
     });
              
 const initMap = function() {
+    
+        const infillGraphicsLayer = new GraphicsLayer({
+        title: "Laramie Infill Parcels - Suitability",
+        opacity: 0.7
+    });
+    
+    map.add(infillGraphicsLayer);
+    
     const infillLayer = new GeoJSONLayer({
         url: "./Laramie_Infill.geojson",
         title: "Laramie Infill Parcels",
-        opacity: 0.7
+        opacity: 0
     });
-    infillLayer.when(() => {
-        console.log("Suitability Analysis");
-        
-        let highCount = 0, mediumCount = 0, lowCount = 0;
-        
-        for (let i = 0; i < infillLayer.source.length; i++) {
-            const parcel = infillLayer.source[i];
-            const attrs = parcel.attributes;
-            
-            let score = 0;
-            
-            // 1. Max Units
-            if (attrs.MaxUnits > 50) score += 3;
-            else if (attrs.MaxUnits > 20) score += 2;
-            else if (attrs.MaxUnits > 5) score += 1;
-            
-            // 2. Public Improvements
-            const totalPI = (attrs.PI_Sidewal || 0) + (attrs.PI_Roadway || 0);
-            if (totalPI === 0) score += 3;
-            else if (totalPI < 1000) score += 2;
-            else if (totalPI < 5000) score += 1;
-            
-            // 3. Lot Size
-            if (attrs.grosssf > 100000) score += 2;
-            else if (attrs.grosssf > 50000) score += 1;
-            
-            // 4. Existing Development
-            if (attrs.ExistingSt === "N") score += 1;
-            if (attrs.ExistingLo === "0") score += 2;
-            
-            // 5. Ownership
-            if (attrs.City_Owned === "Y") {
-                score += 1;  
-            } else if (attrs.UW_Owned === "N") {
-                const ownerName = attrs.name1 || "";
-                if (!ownerName.includes("RAILROAD") && !ownerName.includes("UPRR")) {
-                    score += 1;  
-                }
-            }
-          
-            attrs.SuitabilityScore = score;
-            
-            if (score >= 8) {
-                attrs.Suitability = "High";
-                highCount++;
-            } else if (score >= 5) {
-                attrs.Suitability = "Medium";
-                mediumCount++;
-            } else {
-                attrs.Suitability = "Low";
-                lowCount++;
-            }
-        }
-        
-        console.log(`   Suitability analysis complete:`);
-        console.log(`   High Potential: ${highCount} parcels (Green)`);
-        console.log(`   Medium Potential: ${mediumCount} parcels (Yellow)`);
-        console.log(`   Low Potential: ${lowCount} parcels (Red)`);
-        
-        infillLayer.renderer = {
-            type: "unique-value",
-            field: "Suitability", 
-            defaultSymbol: {
-                type: "simple-fill",
-                color: [150, 150, 150, 0.7],
-                outline: { color: [100, 100, 100], width: 1 }
-            },
-            uniqueValueInfos: [
-                {
-                    value: "High",
-                    symbol: {
-                        type: "simple-fill",
-                        color: [0, 255, 0, 0.7],  // GREEN
-                        outline: { color: [0, 200, 0], width: 1 }
-                    }
-                },
-                {
-                    value: "Medium",
-                    symbol: {
-                        type: "simple-fill",
-                        color: [255, 255, 0, 0.7],  // YELLOW
-                        outline: { color: [200, 200, 0], width: 1 }
-                    }
-                },
-                {
-                    value: "Low",
-                    symbol: {
-                        type: "simple-fill",
-                        color: [255, 0, 0, 0.7],  // RED
-                        outline: { color: [200, 0, 0], width: 1 }
-                    }
-                }
-            ]
-        };
-        
     
+    infillLayer.when(() => {
+        console.log("Infill layer loaded, running suitability analysis...");
+        
+        const query = infillLayer.createQuery();
+        query.outFields = ["*"];
+        query.returnGeometry = true;
+        
+        infillLayer.queryFeatures(query).then(function(results) {
+            const features = results.features;
+            console.log(`Total parcels: ${features.length}`);
+            
+            let highCount = 0, mediumCount = 0, lowCount = 0;
+            
+            for (let i = 0; i < features.length; i++) {
+                const feature = features[i];
+                const attrs = feature.attributes;
+                const geometry = feature.geometry;
+                
+                let score = 0;
+                
+                if (attrs.MaxUnits > 50) score += 3;
+                else if (attrs.MaxUnits > 20) score += 2;
+                else if (attrs.MaxUnits > 5) score += 1;
+                
+                const totalPI = (attrs.PI_Sidewal || 0) + (attrs.PI_Roadway || 0);
+                if (totalPI === 0) score += 3;
+                else if (totalPI < 1000) score += 2;
+                else if (totalPI < 5000) score += 1;
+                
+                if (attrs.grosssf > 100000) score += 2;
+                else if (attrs.grosssf > 50000) score += 1;
+                
+                if (attrs.ExistingSt === "N") score += 1;
+                if (attrs.ExistingLo === "0") score += 2;
+                else if (attrs.ExistingLo === "1") score += 1;
+                
+                if (attrs.City_Owned === "Y") {
+                    score += 1;  
+                } else if (attrs.UP_Owned === "N") {
+                    const ownerName = attrs.name1 || "";
+                    if (!ownerName.includes("RAILROAD") && !ownerName.includes("UPRR")) {
+                        score += 1;  
+                    }
+                }
+                
+                let color, suitability;
+                
+                if (score >= 8) {
+                    color = [0, 255, 0, 0.7];
+                    suitability = "High";
+                    highCount++;
+                } else if (score >= 5) {
+                    color = [255, 255, 0, 0.7];
+                    suitability = "Medium";
+                    mediumCount++;
+                } else {
+                    color = [255, 0, 0, 0.7];
+                    suitability = "Low";
+                    lowCount++;
+                }
+                
+                const graphic = new Graphic({
+                    geometry: geometry,
+                    symbol: {
+                        type: "simple-fill",
+                        color: color,
+                        outline: {
+                            color: [100, 100, 100],
+                            width: 1
+                        }
+                    },
+                    attributes: {
+                        pidn: attrs.pidn,
+                        name1: attrs.name1,
+                        MaxUnits: attrs.MaxUnits,
+                        grosssf: attrs.grosssf,
+                        SuitabilityScore: score,
+                        Suitability: suitability
+                    },
+                    popupTemplate: {
+                        title: `Parcel ${attrs.pidn} - ${suitability} Potential`,
+                        content: `
+                            <b>Suitability:</b> ${suitability}<br>
+                            <b>Score:</b> ${score}<br>
+                            <b>Max Units:</b> ${attrs.MaxUnits}<br>
+                            <b>Lot Size:</b> ${attrs.grosssf.toLocaleString()} sq ft<br>
+                            <b>Owner:</b> ${attrs.name1}
+                        `
+                    }
+                });
+                
+                infillGraphicsLayer.add(graphic);
+            }
+            
+            console.log(`Analysis complete: ${highCount} High, ${mediumCount} Medium, ${lowCount} Low`);
+            
+        }).catch(error => {
+            console.error("Error querying features:", error);
+        });
         
     }).catch(error => {
-        console.error("Error in suitability analysis:", error);
+        console.error("Error loading infill layer:", error);
     });
+    
     map.add(infillLayer);
 
 const zoningLayer = new GeoJSONLayer({
@@ -365,7 +378,7 @@ view.when(() => {
     
     view.ui.add(toggleBtn, "top-right");
     
-    const zoningLayer = map.layers.getItemAt(1);
+    const zoningLayer = map.layers.getItemAt(2);
     
     let zoningVisible = true;
     
