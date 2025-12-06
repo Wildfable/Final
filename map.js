@@ -32,6 +32,8 @@ Main = (function() {
     });
 
     let infillGraphicsLayer;
+
+    let infillGraphicsLayer;
     
     const initMap = function() {
         infillGraphicsLayer = new GraphicsLayer({
@@ -41,6 +43,11 @@ Main = (function() {
         
         map.add(infillGraphicsLayer);
     
+        const infillLayer = new GeoJSONLayer({
+            url: "./Laramie_Infill.geojson",
+            title: "Laramie Infill Parcels",
+            opacity: 0
+        });
         const infillLayer = new GeoJSONLayer({
             url: "./Laramie_Infill.geojson",
             title: "Laramie Infill Parcels",
@@ -360,6 +367,7 @@ const zoningLayer = new GeoJSONLayer({
 initMap();
 
 view.when(() => {
+    let searchHighlightLayer = null;
     let searchHighlightLayer = null;
     const zoningToggleBtn = document.createElement("button");
     zoningToggleBtn.textContent = "Hide Zoning Districts";
@@ -739,5 +747,6 @@ title.style.cssText = `
 `;
 document.getElementById("map").appendChild(title);
 
+});
 });
 })();
