@@ -32,10 +32,9 @@ Main = (function() {
     });
 
     let infillGraphicsLayer;
-
-    let infillGraphicsLayer;
     
     const initMap = function() {
+
         infillGraphicsLayer = new GraphicsLayer({
             title: "Laramie Infill Parcels - Suitability",
             opacity: 0.7
@@ -43,11 +42,6 @@ Main = (function() {
         
         map.add(infillGraphicsLayer);
     
-        const infillLayer = new GeoJSONLayer({
-            url: "./Laramie_Infill.geojson",
-            title: "Laramie Infill Parcels",
-            opacity: 0
-        });
         const infillLayer = new GeoJSONLayer({
             url: "./Laramie_Infill.geojson",
             title: "Laramie Infill Parcels",
@@ -368,7 +362,6 @@ initMap();
 
 view.when(() => {
     let searchHighlightLayer = null;
-    let searchHighlightLayer = null;
     const zoningToggleBtn = document.createElement("button");
     zoningToggleBtn.textContent = "Hide Zoning Districts";
     zoningToggleBtn.style.cssText = `
@@ -588,6 +581,8 @@ view.ui.add(suitabilityToggleBtn, "top-right");
     
     document.getElementById("map").appendChild(legendWrapper);
 
+
+
     const sqFtInput = document.createElement("input");
     sqFtInput.type = "number";
     sqFtInput.placeholder = "Min sq ft";
@@ -613,6 +608,7 @@ view.ui.add(suitabilityToggleBtn, "top-right");
         margin: 5px;
     `;
     
+  
     view.ui.add(sqFtInput, "top-right");
     view.ui.add(sqFtBtn, "top-right");
     
@@ -637,11 +633,11 @@ sqFtBtn.addEventListener("click", () => {
         return;
     }
     
-
+  
     const oldResults = document.querySelector(".sqft-results");
     if (oldResults) oldResults.remove();
     
-  
+    
     if (searchHighlightLayer) {
         try {
             map.remove(searchHighlightLayer);
@@ -652,7 +648,7 @@ sqFtBtn.addEventListener("click", () => {
         searchHighlightLayer = null;
     }
     
-
+   
     const matchingGraphics = graphics.filter(graphic => {
         return graphic.attributes && graphic.attributes.grosssf >= minSqFt;
     });
@@ -665,13 +661,13 @@ sqFtBtn.addEventListener("click", () => {
         
         console.log(`Found ${count} matching parcels`);
         
-     
+       
         searchHighlightLayer = new GraphicsLayer();
         map.add(searchHighlightLayer);
         
         console.log("Created new highlight layer:", searchHighlightLayer);
         
-      
+       
         matchingGraphics.forEach(originalGraphic => {
             const suitability = originalGraphic.attributes.Suitability;
             let highlightColor;
@@ -701,7 +697,7 @@ sqFtBtn.addEventListener("click", () => {
             searchHighlightLayer.add(highlightGraphic);
         });
         
-     
+    
         const resultsDiv = document.createElement("div");
         resultsDiv.innerHTML = `
             <div style="background: white; padding: 10px; border-radius: 4px; margin-top: 5px; border: 2px solid #0056b3; max-width: 250px;">
@@ -719,7 +715,7 @@ sqFtBtn.addEventListener("click", () => {
         
        
         
-    
+   
         const searchContainer = sqFtBtn.parentNode;
         searchContainer.appendChild(resultsDiv);
         
@@ -747,6 +743,5 @@ title.style.cssText = `
 `;
 document.getElementById("map").appendChild(title);
 
-});
 });
 })();
