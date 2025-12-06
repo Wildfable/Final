@@ -8,6 +8,7 @@ import GraphicsLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/Graphi
 import MapView from "https://js.arcgis.com/4.33/@arcgis/core/views/MapView.js";
 import GeoJSONLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/GeoJSONLayer.js";
 import FeatureLayer from "https://js.arcgis.com/4.33/@arcgis/core/layers/FeatureLayer.js";
+import Legend from "https://js.arcgis.com/4.33/@arcgis/core/widgets/Legend.js";
 
 
 
@@ -65,9 +66,9 @@ const initMap = function() {
                 
                 let score = 0;
                 
-                if (attrs.MaxUnits > 50) score += 3;
-                else if (attrs.MaxUnits > 20) score += 2;
-                else if (attrs.MaxUnits > 5) score += 1;
+                if (attrs.MaxLots > 50) score += 3;
+                else if (attrs.MaxLots > 20) score += 2;
+                else if (attrs.MaxLots > 5) score += 1;
                 
                 const totalPI = (attrs.PI_Sidewal || 0) + (attrs.PI_Roadway || 0);
                 if (totalPI === 0) score += 3;
@@ -78,17 +79,13 @@ const initMap = function() {
                 else if (attrs.grosssf > 50000) score += 1;
                 
                 if (attrs.ExistingSt === "N") score += 1;
-                if (attrs.ExistingLo === "0") score += 2;
-                else if (attrs.ExistingLo === "1") score += 1;
+                if (attrs.OnetoThree === "Y") score += 1;
+                if (attrs.Commercial === "Y") score += 2
+                else if (attrs.Fourplus_U === "Y") score += 2;
                 
-                if (attrs.City_Owned === "Y") {
-                    score += 1;  
-                } else if (attrs.UP_Owned === "N") {
-                    const ownerName = attrs.name1 || "";
-                    if (!ownerName.includes("RAILROAD") && !ownerName.includes("UPRR")) {
-                        score += 1;  
-                    }
-                }
+                if (attrs.UP_Owned === "Y") score -= 3;
+                if (attrs.UW_Owned === "Y") score -= 5;
+                
                 
                 let color, suitability;
                 
