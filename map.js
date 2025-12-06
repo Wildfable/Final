@@ -359,9 +359,9 @@ const zoningLayer = new GeoJSONLayer({
 initMap();
 
 view.when(() => {
-    const toggleBtn = document.createElement("button");
-    toggleBtn.textContent = "Hide Zoning Districts";
-    toggleBtn.style.cssText = `
+    const zoningToggleBtn = document.createElement("button");
+    zoningToggleBtn.textContent = "Hide Zoning Districts";
+    zoningToggleBtn.style.cssText = `
         padding: 10px 15px;
         background-color: #0079c1;
         color: white;
@@ -373,24 +373,232 @@ view.when(() => {
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     `;
     
-    view.ui.add(toggleBtn, "top-right");
+    view.ui.add(zoningToggleBtn, "top-right");
     
     const zoningLayer = map.layers.getItemAt(2);
     
     let zoningVisible = true;
     
-    toggleBtn.addEventListener("click", function() {
+    zoningToggleBtn.addEventListener("click", function() {
         if (zoningVisible) {
             zoningLayer.visible = false;
-            toggleBtn.textContent = "Show Zoning Districts";
+            zoningToggleBtn.textContent = "Show Zoning Districts";
             zoningVisible = false;
         } else {
             zoningLayer.visible = true;
-            toggleBtn.textContent = "Hide Zoning Districts";
+            zoningToggleBtn.textContent = "Hide Zoning Districts";
             zoningVisible = true;
         }
     });
+    
+    const suitabilityToggleBtn = document.createElement("button");
+    suitabilityToggleBtn.textContent = "Hide Suitability Analysis";
+  suitabilityToggleBtn.style.cssText = `
+    padding: 10px 15px;
+    background-color: #F28C28;  
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+`;
+
+view.ui.add(suitabilityToggleBtn, "top-right");
+    
+    const suitabilityLayer = map.layers.getItemAt(0);
+    
+    let suitabilityVisible = true;
+    
+    suitabilityToggleBtn.addEventListener("click", function() {
+        if (suitabilityVisible) {
+            suitabilityLayer.visible = false;
+            suitabilityToggleBtn.textContent = "Show Suitability Analysis";
+            suitabilityVisible = false;
+        } else {
+            suitabilityLayer.visible = true;
+            suitabilityToggleBtn.textContent = "Hide Suitability Analysis";
+            suitabilityVisible = true;
+        }
+    });
+    
+    const legendContainer = document.createElement("div");
+    legendContainer.style.cssText = `
+        background-color: white;
+        padding: 15px;
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        line-height: 1.4;
+        max-width: 220px;
+        max-height: 400px;
+        overflow-y: auto;
+    `;
+    
+    legendContainer.innerHTML = `
+        <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 8px;">Map Legend</h3>
+        
+        <div style="margin-bottom: 15px;">
+            <h4 style="margin: 0 0 8px 0; font-size: 14px; color: #28a745;">Infill Suitability</h4>
+            <div style="margin-bottom: 6px; display: flex; align-items: center;">
+                <div style="flex-shrink: 0; width: 20px; height: 20px; background-color: rgba(0, 255, 0, 0.7); margin-right: 8px; border: 1px solid #00c800;"></div>
+                <span>High Potential (Score ≥ 8)</span>
+            </div>
+            <div style="margin-bottom: 6px; display: flex; align-items: center;">
+                <div style="flex-shrink: 0; width: 20px; height: 20px; background-color: rgba(255, 255, 0, 0.7); margin-right: 8px; border: 1px solid #c8c800;"></div>
+                <span>Medium Potential (Score 5-7)</span>
+            </div>
+            <div style="margin-bottom: 6px; display: flex; align-items: center;">
+                <div style="flex-shrink: 0; width: 20px; height: 20px; background-color: rgba(255, 0, 0, 0.7); margin-right: 8px; border: 1px solid #c80000;"></div>
+                <span>Low Potential (Score < 5)</span>
+            </div>
+            <div style="margin-top: 8px; font-size: 11px; color: #666; font-style: italic;">
+                Toggle with green button above
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <h4 style="margin: 0 0 8px 0; font-size: 14px; color: #0079c1;">Zoning Districts</h4>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; font-size: 11px;">
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(100, 200, 255); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>AE</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(150, 220, 255); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>AV</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(139, 69, 19); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>AG</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(255, 217, 102); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>B1</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(255, 150, 0); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>B2</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(255, 200, 100); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>NB</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(255, 0, 0); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>C2</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(255, 50, 50); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>DC</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(200, 100, 200); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>I1</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(150, 50, 150); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>I2</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(180, 80, 180); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>IP</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(170, 70, 170); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>LM</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(190, 232, 255); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>LR</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(190, 232, 255); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>R1</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(166, 255, 193); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>R2</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(144, 238, 144); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>R2M</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(255, 242, 204); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>R3</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(255, 255, 150); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>R3-PUD</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(210, 180, 140); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>RR</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(200, 200, 200); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>O</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(180, 220, 240); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>TO</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background-color: rgb(150, 150, 150); margin-right: 4px; border: 1px solid black;"></div>
+                    <span>Other</span>
+                </div>
+            </div>
+            <div style="margin-top: 8px; font-size: 11px; color: #666; font-style: italic;">
+                Toggle with blue button above
+            </div>
+        </div>
+        
+        <div style="padding-top: 10px; border-top: 1px solid #ddd; font-size: 11px; color: #666;">
+            <div><strong>Scoring Criteria:</strong></div>
+            <div>• Max Lots (higher = better)</div>
+            <div>• Public Improvement costs (lower = better)</div>
+            <div>• Lot Size (larger = better)</div>
+            <div>• No existing structure (+1)</div>
+            <div>• Commercial/4+ Units (+2)</div>
+            <div>• Railroad/University owned (-3/-5)</div>
+        </div>
+    `;
+
+    const legendWrapper = document.createElement("div");
+    legendWrapper.style.cssText = `
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        z-index: 100;
+    `;
+    legendWrapper.appendChild(legendContainer);
+    
+    document.getElementById("map").appendChild(legendWrapper);
 });
+
+const title = document.createElement("div");
+title.innerHTML = "<h2 style='margin: 0; font-size: 18px;'>Laramie Infill Development Suitability Analysis</h2>";
+title.style.cssText = `
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 12px 25px;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    font-family: Arial, sans-serif;
+    z-index: 100;
+    text-align: center;
+    color: #0056b3;
+    border: 1px solid #0056b3;
+`;
+document.getElementById("map").appendChild(title);
+
+})();
 
 
 /* 
@@ -421,4 +629,4 @@ view.when(() => {
     return {};
 
     */        
-})();
+
