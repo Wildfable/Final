@@ -30,21 +30,29 @@ Main = (function() {
             }
         }
     });
-             
-const initMap = function() {
+
+    let infillGraphicsLayer;
+
+    let infillGraphicsLayer;
     
-        const infillGraphicsLayer = new GraphicsLayer({
-        title: "Laramie Infill Parcels - Suitability",
-        opacity: 0.7
-    });
+    const initMap = function() {
+        infillGraphicsLayer = new GraphicsLayer({
+            title: "Laramie Infill Parcels - Suitability",
+            opacity: 0.7
+        });
+        
+        map.add(infillGraphicsLayer);
     
-    map.add(infillGraphicsLayer);
-    
-    const infillLayer = new GeoJSONLayer({
-        url: "./Laramie_Infill.geojson",
-        title: "Laramie Infill Parcels",
-        opacity: 0
-    });
+        const infillLayer = new GeoJSONLayer({
+            url: "./Laramie_Infill.geojson",
+            title: "Laramie Infill Parcels",
+            opacity: 0
+        });
+        const infillLayer = new GeoJSONLayer({
+            url: "./Laramie_Infill.geojson",
+            title: "Laramie Infill Parcels",
+            opacity: 0
+        });
     
     infillLayer.when(() => {
         console.log("Infill layer loaded, running suitability analysis...");
@@ -359,6 +367,8 @@ const zoningLayer = new GeoJSONLayer({
 initMap();
 
 view.when(() => {
+    let searchHighlightLayer = null;
+    let searchHighlightLayer = null;
     const zoningToggleBtn = document.createElement("button");
     zoningToggleBtn.textContent = "Hide Zoning Districts";
     zoningToggleBtn.style.cssText = `
@@ -577,6 +587,145 @@ view.ui.add(suitabilityToggleBtn, "top-right");
     legendWrapper.appendChild(legendContainer);
     
     document.getElementById("map").appendChild(legendWrapper);
+
+    const sqFtInput = document.createElement("input");
+    sqFtInput.type = "number";
+    sqFtInput.placeholder = "Min sq ft";
+    sqFtInput.style.cssText = `
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        width: 120px;
+        margin: 5px;
+    `;
+    
+    const sqFtBtn = document.createElement("button");
+    sqFtBtn.textContent = "Search Size";
+    sqFtBtn.style.cssText = `
+        padding: 8px 12px;
+        background-color: #0056b3;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin: 5px;
+    `;
+    
+    view.ui.add(sqFtInput, "top-right");
+    view.ui.add(sqFtBtn, "top-right");
+    
+
+sqFtBtn.addEventListener("click", () => {
+    const minSqFt = parseInt(sqFtInput.value.trim());
+    
+    if (isNaN(minSqFt) || minSqFt < 0) {
+        alert("Please enter a valid square footage number.");
+        return;
+    }
+    
+    if (!infillGraphicsLayer) {
+        alert("Parcel data not available yet. Please wait for the map to fully load.");
+        return;
+    }
+    
+    const graphics = infillGraphicsLayer.graphics.toArray();
+    
+    if (graphics.length === 0) {
+        alert("No parcel data loaded yet. Please wait for data to load.");
+        return;
+    }
+    
+
+    const oldResults = document.querySelector(".sqft-results");
+    if (oldResults) oldResults.remove();
+    
+  
+    if (searchHighlightLayer) {
+        try {
+            map.remove(searchHighlightLayer);
+            console.log("Removed previous highlight layer");
+        } catch (e) {
+            console.log("No previous highlight layer to remove");
+        }
+        searchHighlightLayer = null;
+    }
+    
+
+    const matchingGraphics = graphics.filter(graphic => {
+        return graphic.attributes && graphic.attributes.grosssf >= minSqFt;
+    });
+    
+    matchingGraphics.sort((a, b) => b.attributes.grosssf - a.attributes.grosssf);
+    
+    if (matchingGraphics.length > 0) {
+        const count = matchingGraphics.length;
+        const largest = matchingGraphics[0].attributes.grosssf;
+        
+        console.log(`Found ${count} matching parcels`);
+        
+     
+        searchHighlightLayer = new GraphicsLayer();
+        map.add(searchHighlightLayer);
+        
+        console.log("Created new highlight layer:", searchHighlightLayer);
+        
+      
+        matchingGraphics.forEach(originalGraphic => {
+            const suitability = originalGraphic.attributes.Suitability;
+            let highlightColor;
+            
+            if (suitability === "High") {
+                highlightColor = [0, 255, 0, 0.9];
+            } else if (suitability === "Medium") {
+                highlightColor = [255, 255, 0, 0.9];
+            } else {
+                highlightColor = [255, 0, 0, 0.9];
+            }
+            
+            const highlightGraphic = new Graphic({
+                geometry: originalGraphic.geometry,
+                symbol: {
+                    type: "simple-fill",
+                    color: highlightColor,
+                    outline: {
+                        color: [0, 0, 0, 1],
+                        width: 3
+                    }
+                },
+                attributes: originalGraphic.attributes,
+                popupTemplate: originalGraphic.popupTemplate
+            });
+            
+            searchHighlightLayer.add(highlightGraphic);
+        });
+        
+     
+        const resultsDiv = document.createElement("div");
+        resultsDiv.innerHTML = `
+            <div style="background: white; padding: 10px; border-radius: 4px; margin-top: 5px; border: 2px solid #0056b3; max-width: 250px;">
+                <strong>Search Results (${count} parcels):</strong><br>
+                Minimum: ${minSqFt.toLocaleString()} sq ft<br>
+                Largest: ${largest.toLocaleString()} sq ft<br>
+            </div>
+        `;
+        resultsDiv.style.cssText = `
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        `;
+        
+        resultsDiv.className = "sqft-results";
+        
+       
+        
+    
+        const searchContainer = sqFtBtn.parentNode;
+        searchContainer.appendChild(resultsDiv);
+        
+    } else {
+        alert(`No parcels found with ${minSqFt.toLocaleString()} sq ft or larger.`);
+    }
 });
 
 const title = document.createElement("div");
@@ -598,35 +747,6 @@ title.style.cssText = `
 `;
 document.getElementById("map").appendChild(title);
 
-})();
-
-
-/* 
-view.when(() => {
-  const searchInput = document.getElementById("searchInput");
-  const searchBtn = document.getElementById("searchBtn");
-
-  searchBtn.addEventListener("click", () => {
-    const searchTerm = searchInput.value.trim();
-
-
-    const matchedKey = Object.keys(cities).find(city => city.toLowerCase() === searchTerm.toLowerCase());
-
-    if (matchedKey) {
-      const city = cities[matchedKey];
-      view.goTo({
-        center: [city.coord[0], city.coord[1]],
-        zoom: 10
-      }).catch(err => {
-        console.error("GoTo failed: ", err);
-      });
-    } else {
-      alert("City not found in dataset.");
-    }
-  });
 });
-                
-    return {};
-
-    */        
-
+});
+})();
